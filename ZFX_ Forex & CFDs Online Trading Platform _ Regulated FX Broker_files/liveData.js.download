@@ -1,0 +1,414 @@
+function getCookie(name) {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function hide_tooltip() {
+	const tooltip = $('.chartjs-tooltip');
+	if (tooltip.css('opacity') === 1) {
+		tooltip.css('opacity', 0);
+	}
+}
+
+(function ($) {
+	$(document).ready(function () {
+
+		if ($('.zw-table').length) {
+			$(window).on('scroll', function (e) {
+				hide_tooltip();
+			});
+		}
+
+
+		if ($('.products.home-section').length) {
+
+
+			$(window).on('scroll', function () {
+				const card = $('.zw-card-extended-container');
+				const tooltip = $('.chartjs-tooltip');
+
+
+				const cardOffset = card.offset();
+				const cardTop = cardOffset.top;
+				const cardBottom = cardTop + card.outerHeight();
+				const cardLeft = cardOffset.left;
+				const cardRight = cardLeft + card.outerWidth();
+
+				const tooltipOffset = tooltip.offset();
+				const tooltipTop = tooltipOffset?.top;
+				const tooltipBottom = tooltipTop + tooltip.outerHeight();
+				const tooltipLeft = tooltipOffset.left;
+				const tooltipRight = tooltipLeft + tooltip.outerWidth();
+
+				if (
+					tooltipBottom < cardTop ||
+					tooltipTop > cardBottom ||
+					tooltipRight < cardLeft ||
+					tooltipLeft > cardRight
+				) {
+					hide_tooltip();
+				}
+
+
+			});
+			$('.zw-card-extended-container').on('scroll', function (e) {
+				hide_tooltip();
+			});
+
+
+			const username = getCookie("mqtt_username") || $('#mqtt_username').text().trim() || "hivemq-uat-subscribe";
+			const url = getCookie("mqtt_url") || $('#mqtt_url').text().trim() || "ba569826400a4322816e47abc2b9b059.s1.eu.hivemq.cloud";
+			const p = getCookie("mqtt_p") || $('#mqtt_p').text().trim() || "HiveMqUat123456";
+
+			const client = mqtt.connect(`wss://${url}:8884/mqtt`, {
+				username: username,
+				password: p
+			});
+
+			let subscribedTopics = [];
+
+			function subscribeToActiveTab() {
+				$('.tab-panel.active .card-extended').each(function () {
+					let shortName = $(this).find('.stock-short-name').text();
+
+					if (!subscribedTopics.includes(shortName)) {
+						client.subscribe(`quotes/${shortName}`, function (err) {
+							if (!err) {
+								subscribedTopics.push(shortName);
+							} else {
+								console.error("Failed to subscribe: ", err);
+							}
+						});
+					}
+				});
+			}
+
+			function unsubscribeFromAllTopics() {
+				subscribedTopics.forEach(function (topic) {
+					client.unsubscribe(`quotes/${topic}`, function (err) {
+						if (!err) {
+							console.log(`Unsubscribed from topic: ${topic}`);
+						} else {
+							console.error("Failed to unsubscribe: ", err);
+						}
+					});
+				});
+				subscribedTopics = [];
+			}
+
+			client.on("connect", function () {
+				console.log("Connected to MQTT broker");
+
+				subscribeToActiveTab();
+			});
+
+
+			client.on("message", function (topic, message) {
+				try {
+					const data = JSON.parse(message.toString());
+					const symbol = data.Symbol;
+
+					const stockElement = $(`.card-extended[data-symbol='${symbol}']`);
+					const stockClose = stockElement.attr('data-close');
+					const stockCurrency = stockElement.attr('data-currency');
+
+					if (stockElement.length) {
+
+						let newPrice = parseFloat(parseFloat(data.Bid).toFixed(5));
+
+						if (stockCurrency === 'USX') {
+							newPrice = parseFloat((newPrice * 10000 / 100).toFixed(5));
+						}
+
+						let changePercent = (newPrice - stockClose) / stockClose * 100;
+						changePercent = changePercent.toFixed(2);
+
+						const changeElement = stockElement.find('.change-data');
+						const priceElement = stockElement.find('.price-container');
+
+						let old_price = parseFloat(priceElement.find('.price-data').text());
+
+						if (newPrice - old_price >= 0) {
+							priceElement.find('.price').removeClass('text-danger').addClass('text-success');
+						} else {
+							priceElement.find('.price').removeClass('text-success').addClass('text-danger');
+						}
+
+						if (changePercent !== 0) {
+
+							changeElement.text(changePercent + '%');
+
+							if (changePercent > 0) {
+								changeElement.removeClass('text-danger').addClass('text-success');
+							} else {
+								changeElement.removeClass('text-success').addClass('text-danger');
+
+							}
+						}
+
+						if (typeof newPrice === 'number' && newPrice !== 0) {
+
+							priceElement.find('.price-data').text(newPrice);
+							stockElement.find('.card__body').removeClass('no_price');
+						}
+					}
+				} catch (e) {
+					console.error("Message Data: ", message.toString());
+				}
+			});
+
+			const tabs = document.querySelectorAll('.tab-btn');
+
+			tabs.forEach(tab => {
+				tab.addEventListener('click', function () {
+
+					tabs.forEach(tab => {
+						tab.classList.remove('active');
+						const img = tab.querySelector('img');
+						const imgSrc = img.getAttribute('src');
+						img.setAttribute('src', imgSrc.replace('/active/', '/'));
+					});
+
+					this.classList.add('active');
+
+					const img = this.querySelector('img');
+					const imgSrc = img.getAttribute('src');
+					img.setAttribute('src', imgSrc.replace('/tabs/', '/tabs/active/'));
+
+					unsubscribeFromAllTopics();
+
+					$('.tab-panel').removeClass('active');
+					const tabID = $(this).data('tab');
+					$('#' + tabID).addClass('active');
+
+					subscribeToActiveTab();
+				});
+			});
+
+		}
+
+		if ($('.product-table').length) {
+
+			var liveData = {
+				client: null,
+				subscribedTopics: [],
+				rowMap: []
+			}
+
+			function updatePrices(askPrice, bidPrice, stockClose, buyTd, sellTd) {
+
+				let currentBuy = parseFloat(buyTd.text()) || 0;
+				let currentSell = parseFloat(sellTd.text()) || 0;
+				currentBuy = parseFloat(currentBuy.toFixed(5));
+				currentSell = parseFloat(currentSell.toFixed(5));
+
+
+				if (askPrice) {
+					buyTd.children('span').text(askPrice);
+					buyTd.attr('data-order', askPrice);
+
+					if (askPrice >= currentBuy) {
+						buyTd.children('span').addClass("positive").removeClass("negative");
+					} else {
+						buyTd.children('span').addClass("negative").removeClass("positive");
+					}
+				}
+				if (bidPrice) {
+					sellTd.children('span').text(bidPrice);
+					sellTd.attr('data-order', bidPrice);
+
+					const priceTextElement = sellTd.children('.price-text');
+
+					if (priceTextElement.length > 0) {
+						if (bidPrice >= currentSell) {
+							priceTextElement.addClass("positive").removeClass("negative");
+						} else if (bidPrice < currentSell) {
+							priceTextElement.addClass("negative").removeClass("positive");
+						}
+					}
+				}
+			}
+
+			function connect() {
+
+				if ($('.product-table').length) {
+
+					const username = getCookie("mqtt_username") || $('#mqtt_username').text().trim() || "hivemq-uat-subscribe";
+					const url = getCookie("mqtt_url") || $('#mqtt_url').text().trim() || "ba569826400a4322816e47abc2b9b059.s1.eu.hivemq.cloud";
+					const p = getCookie("mqtt_p") || $('#mqtt_p').text().trim() || "HiveMqUat123456";
+
+					liveData.client = mqtt.connect(`wss://${url}:8884/mqtt`, {
+						username: username,
+						password: p
+					});
+
+
+					liveData.client.on("connect", function () {
+						console.log("Connected to mqtt");
+					});
+				}
+			}
+
+			function subscribeTopic() {
+				liveData.rowMap = [];
+				$('.product-table .zw-table table tbody tr').each(function () {
+					const row = $(this);
+					const symbol = row.attr('data-symbol');
+					const stockCurrency = row.attr('data-currency');
+					const stockClose = row.attr('data-close');
+					const sellTd = row.find('.sell-td');
+					const buyTd = row.find('.buy-td');
+					const changeTd = row.find('.change-td');
+					const firstTd = row.find('td:first');
+					const topic = `quotes/${symbol}`;
+					liveData.client.subscribe(topic, function (err) {
+
+						if (!err) {
+							liveData.rowMap[symbol] = {
+								row,
+								stockCurrency,
+								sellTd,
+								buyTd,
+								stockClose,
+								changeTd,
+								firstTd
+							};
+
+							liveData.subscribedTopics.push(topic);
+						}
+					});
+				});
+			}
+
+			function unsubscribeAll() {
+				liveData.subscribedTopics.forEach(topic => {
+					liveData.client.unsubscribe(topic, function (err) {
+						if (!err) {
+							console.log(`Unsubscribed from ${topic}`);
+						} else {
+							console.error(`Failed to unsubscribe from ${topic}`, err);
+						}
+					});
+				});
+
+
+				liveData.subscribedTopics = [];
+			}
+
+			function updateData() {
+				liveData.client.on("message", function (topic, message) {
+					try {
+						const data = JSON.parse(message.toString());
+						const symbol = topic.split("/")[1];
+						if (liveData.rowMap[symbol]) {
+
+
+							const {stockCurrency, sellTd, buyTd, stockClose, changeTd, row} = liveData.rowMap[symbol];
+							let askPrice = data.Ask;
+							let bidPrice = data.Bid;
+
+
+							if (stockCurrency === 'USX') {
+								askPrice = askPrice * 10000 / 100;
+							}
+
+							let changePercent = (askPrice - stockClose) / stockClose * 100;
+							changePercent = changePercent.toFixed(2);
+
+
+							updatePrices(askPrice, bidPrice, stockClose, buyTd, sellTd);
+
+							changeTd.children('span').text(changePercent);
+							changeTd.attr('data-order', changePercent);
+
+							let dtrs = row.siblings('.child');
+
+
+							if (dtrs.length) {
+								dtrs.each(function () {
+									const sibling = $(this).find('.dtr-details');
+
+									if (sibling.length) {
+										const sellTitles = ['Sell', '卖出', '賣出', 'ขาย', 'Bán', 'Jual', '매도', 'بيع', 'Sat', 'Vender', 'बेचें'];
+										const buyTitles = ['Buy', 'شراء', 'ซื้อ', '买入', '買入', 'Beli', 'Mua', 'Satın al', '구매', 'Comprar', 'खरीदें'];
+										const changeTitles = ['Change %', 'التغيير %', 'เปลี่ยนแปลง %', 'Thay đổi %', 'Tukar %', 'Perubahan %', '변경 %', 'Değiştir %', 'Cambiar %', 'बदलना %', '变动 %', '變動 %'];
+										sibling.each(function () {
+											const titles = $(this).find('.dtr-title');
+											if (titles.length) {
+												titles.each(function () {
+													const parent = $(this).parent().parent().parent().parent().prev('.parent');
+													if (sellTitles.includes($(this).text().trim())) {
+														const parentSellTd = parent.find('.sell-td span');
+														const mobileSell = $(this).parent().children('.dtr-data').find('span');
+														mobileSell.text(parentSellTd.text());
+														if (parentSellTd.hasClass('positive')) {
+															mobileSell.removeClass('text-danger').addClass('text-success');
+														} else {
+															mobileSell.removeClass('text-success').addClass('text-danger');
+														}
+													}
+
+													if (buyTitles.includes($(this).text().trim())) {
+														const parentBuyTd = parent.find('.buy-td span');
+														const mobileBuy = $(this).parent().children('.dtr-data').find('span');
+														mobileBuy.text(parentBuyTd.text());
+														if (parentBuyTd.hasClass('positive')) {
+															mobileBuy.removeClass('text-danger').addClass('text-success');
+														} else {
+															mobileBuy.removeClass('text-success').addClass('text-danger');
+														}
+													}
+
+
+													if (changeTitles.includes($(this).text().trim())) {
+														const parentChangeTd = parent.find('.change-td span');
+														const mobileChange = $(this).parent().children('.dtr-data').find('span');
+														mobileChange.text(parentChangeTd.text());
+														if (parentChangeTd.hasClass('text-success')) {
+
+															mobileChange.removeClass('text-danger').addClass('text-success');
+														} else {
+															mobileChange.removeClass('text-success').addClass('text-danger');
+														}
+													}
+												});
+											}
+
+										});
+									}
+
+								});
+							}
+
+							if (changePercent !== 0) {
+
+								if (changePercent > 0) {
+									changeTd.children('span').removeClass('text-danger').addClass('text-success');
+								} else {
+									changeTd.children('span').removeClass('text-success').addClass('text-danger');
+								}
+
+
+							}
+						}
+					} catch (e) {
+						console.error("Error message: ", message.toString());
+					}
+				});
+
+			}
+
+			connect()
+			updateData();
+
+			window.addEventListener('tableChange', function () {
+				unsubscribeAll();
+				subscribeTopic();
+			});
+		}
+
+	})
+})(jQuery);
+
+

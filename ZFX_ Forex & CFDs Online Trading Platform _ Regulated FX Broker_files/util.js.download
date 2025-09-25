@@ -1,0 +1,295 @@
+// deviceId设定
+var deviceId = "";
+
+// 获取客户ID
+function getVisitorId(email, username) {
+    return new Promise((resolve) => {
+        var xhr = new XMLHttpRequest();
+        if (deviceId === "") {
+            deviceId = getLocalStorage("deviceId");
+        }
+        var data = {
+            thirdAppFlag: true,
+            email: email,
+            username: username,
+            userAgentId: deviceId
+        }
+        var timeout = setTimeout(() => {
+           xhr.abort();
+           resolve(deviceId);
+           console.log('##### timeout: use deviceId - '+deviceId);
+        }, 2000);
+        xhr.open('POST', 'https://'+req_domain+'/dev-api/api/customer/getByPhoneNumberByVisitor', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('AuthorizationToken', req_auth_token);
+        xhr.send(JSON.stringify(data));
+        try {
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    clearTimeout(timeout);
+                    var jsonData = JSON.parse(xhr.responseText);
+                    // console.log(jsonData);
+                    if (jsonData && jsonData.data && jsonData.data.visitorId) {
+                        // console.log('visitorId=' + jsonData.data.visitorId);
+                        resolve(jsonData.data.visitorId);
+                    } else {
+                        // console.log('VisitorId Is Null, To Create Customer.')
+                        resolve(deviceId);
+                    }
+
+                } else {
+                    // console.error('reqeust failed ,code = ' + xhr.status);
+                    resolve(deviceId);
+                }
+            };
+            xhr.onerror = function () {
+                // console.error('request error!')
+                resolve(deviceId);
+            };
+        } catch (e) {
+            resolve(deviceId);
+        }
+    });
+}
+
+// 获取访客端配置信息
+async function getConfig() {
+    try {
+        // 使用fetch函数发送请求
+        const response = await fetch(req_identify_domain+'/rtcc/embeddable/config?url='+from_website, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + req_auth_token
+            }
+        });
+        const data = await response.json();
+        return data.appUser;
+    } catch (e) {
+        console.log('获取配置失败：'+e);
+        return {};
+    }
+}
+
+// 更新访客端配置信息
+async function setConfig(id, url, data) {
+    try {
+        var appuser = {
+            id: id,
+            target: url,
+            dynamicParams: data,
+            url: from_website
+        };
+        const response = await fetch(req_identify_domain + '/rtcc/embeddable/active', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + req_auth_token
+            },
+            body: JSON.stringify(appuser)
+        });
+        return await response.json();
+        // console.log('配置信息更新成功' + res_data);
+    } catch (e) {
+        // console.log('配置信息更新失败');
+        console.log(e);
+    }
+}
+
+// 参数处理
+function getUrlParams(name) {
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(window.location.href);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/*参数说明：
+    需被控制的Select对象，
+    需显示的option序号(留空则不处理) eg:[0,1,3]，
+    需隐藏的option序号(留空则不处理) eg:[2,4,6]
+    */
+function toggleOptionShow(obj, arrShow, arrHide){
+    function arrHandle(arr,type){
+        if($.isArray(arr)){
+            var len=arr.length;
+            for(i=0;i<len;i++){
+                var optionNow=obj.find("option").eq(arr[i]);
+                var optionP=optionNow.parent("span");
+                if(type==="show"){
+                    if(optionP.length > 0){
+                        optionP.children().clone().replaceAll(optionP);
+                    }
+                }else{
+                    if(optionP.length === 0){
+                        optionNow.wrap("<span style='display:none'></span>");
+                    }
+                }
+            }
+        }
+    }
+    arrHandle(arrShow,"show");
+    arrHandle(arrHide,"hide");
+}
+
+// 数据加密
+function encrypt(data) {
+    var key = (req_auth_token);
+    var encrypted = CryptoJS.AES.encrypt(data, key);
+    return encrypted.toString();
+}
+
+// 数据解密
+function decrypt(data) {
+    var key = (req_auth_token);
+    var decrypted = CryptoJS.AES.decrypt(data, key);
+    var decryptedData = decrypted.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(decryptedData);
+}
+
+// 设置sessionStorage
+function setSessionStorage(key, value) {
+    sessionStorage.setItem(key, value);
+}
+
+// 获取sessionStorage
+function getSessionStorage(key) {
+    return sessionStorage.getItem(key);
+}
+
+// 设置localstorage
+function setLocalStorage(key, value) {
+    localStorage.setItem(key, value);
+}
+
+// 获取localstorage
+function getLocalStorage(key) {
+    return localStorage.getItem(key);
+}
+
+// 获取UUID
+function getUUID() {
+    return crypto.randomUUID();
+}
+
+// 获取5位随机数
+function generateFiveDigitRandomNumber() {
+    // 生成一个介于10000到99999之间的随机数
+    return Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+}
+
+// 获取Cookie
+function getCookie(name) {
+    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    arr = document.cookie.match(reg);
+    if (arr){
+        return (arr[2]);
+    }else{
+        return null;
+    }
+}
+
+// 设置Cookie
+function setCookie(key, value) {
+    // 设置缓存Cookie
+    var expires = new Date();
+    expires.setTime(expires.getTime()+(60*1000)); // 1分钟
+    document.cookie = key + '=' + value + "; expires=" + expires.toUTCString() + "; path=/; ";
+}
+
+// 判断是否是正在聊天的会话
+function isTalking(needTransfer, strTransfer) {
+    const target = getSessionStorage(cookie_target);
+    let newData;
+    let esData;
+    let data;
+    if (target !== null) {
+        console.log('##### isTalking() localstorage[target] = ' + target);
+        esData = getSessionStorage(cookie_dynamic);
+        data = decrypt(esData);
+        if (needTransfer) {
+            data.foreignData.autoTransfer = strTransfer;
+        }
+        data.foreignData.Talking = true;
+        newData = encrypt(JSON.stringify(data));
+        console.log('#### isTalking() dynamicParams=' + JSON.stringify(data));
+        setSessionStorage(cookie_dynamic, newData);
+        // window.location.href = target;
+        return target;
+    }
+    return null;
+}
+// 获取历史信息
+async function getHistory(needTransfer, strTransfer) {
+    // 接口处理
+    const appuser = await getConfig();
+    try {
+        if (appuser && appuser.clients && appuser.clients[from_website].active) {
+            // 设置动态参数
+            var dynamicParams = appuser.clients[from_website].dynamicParams;
+            if(needTransfer) {
+                dynamicParams.foreignData.autoTransfer = strTransfer;
+            }
+            dynamicParams.foreignData.Talking = true;
+            console.log('#### dynamicParams=' + JSON.stringify(dynamicParams));
+            var enData = encrypt(JSON.stringify(dynamicParams));
+            setSessionStorage(cookie_dynamic, enData);
+            window.location.href = appuser.clients[from_website].target;
+        }
+        setLocalStorage('deviceId', appuser.clients.deviceId);
+    } catch (e){
+        deviceId = getUUID();
+        setLocalStorage('deviceId', deviceId);
+        console.log(e)
+    }
+
+}
+
+// 自动转人工事件
+function autoTransfer(email, username) {
+    if(email == null) {
+        email = username + '@zfx.com';
+    }
+    if (username == null) {
+        username = 'Guest_' + generateFiveDigitRandomNumber();
+    }
+    var region = document.getElementById("region").value;
+
+    getVisitorId(email, username).then(data => {
+        console.log('##### getVisitorId() id=' + data);
+
+        var visitorId = data;
+        data = JSON.stringify(getObj(visitorId, username, region, from_website));
+        var url = "https://"+req_domain+"/webim/#/requestInitH5/";
+        var token = list_token[region];
+        var target =  url + token;
+
+        setSessionStorage(cookie_target, target);
+
+        // 更新远程配置（无法读写本地缓存 - 1小时有效期）
+        return setConfig(visitorId, target, data)
+            .then(() => {
+                var enData = encrypt(data);
+                setSessionStorage(cookie_dynamic, enData);
+                console.log('setConfig() target=' + target);
+                // setTimeout(function () {
+                window.location.href = target;
+                // }, 2000);
+            })
+            .catch(error => {
+                console.log('##### setConfig() ERROR:' + error);
+            });
+    }).catch(error => {
+        console.log('##### getVisitorId() ERROR:' + error);
+        // 异常走普通参数继续跳转
+        var data = JSON.stringify(getObj(deviceId, username, region, from_website));
+        var url = "https://"+req_domain+"/webim/#/requestInitH5/";
+        var token = list_token[region];
+        console.log('target=' + url + token + "?dynamicParams=" + data);
+        // setTimeout(function () {
+        window.location.href = url + token + "?dynamicParams=" + data;
+        // }, 2000);
+    });
+}

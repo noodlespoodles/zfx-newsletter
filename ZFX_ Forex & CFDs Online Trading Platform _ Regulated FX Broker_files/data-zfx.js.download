@@ -1,0 +1,78 @@
+const list_region = [
+    'China(Simplified Chinese)', 'China(Traditional Chinese)',
+    'English', 'Indo(Indonesia)',
+    'Vietnam', 'Arabic',
+    'Thailand(Thai)', 'Korean',
+    'Turkish', 'Spanish',
+    'Hindi', 'Portuguese',
+    'Thailand(Eng)', 'Indo(Eng)',
+    'Vietnam(Eng)', 'Arabic(Eng)',
+    'Turkish(Eng)', 'Hindi(Eng)',
+    'Melayu', 'MENA',
+    'MENA(Eng)', 'China_Bak(Simplified Chinese)',
+    'China_Bak(Traditional Chinese)', 'English_Bak',
+];
+
+const list_mediatype = [
+    'web-zfx-China(简体中文)', 'web-zfx-China(繁体中文)',
+    'web-zfx-English', 'web-zfx-Indo(Indonesia)',
+    'web-zfx-Vietnam', 'web-zfx-Arabic',
+    'web-zfx-Thailand(Thai)', 'web-zfx-Korean',
+    'web-zfx-Turkish', 'web-zfx-Spanish',
+    'web-zfx-Hindi', 'web-zfx-Portuguese',
+    'web-cft-Thailand(English)', 'web-zfx-Indo(English)',
+    'web-zfx-Vietnam(English)', 'web-zfx-Arabic(English)',
+    'web-zfx-Turkish(English)', 'web-zfx-hidni(English)',
+    'web-zfx-Melayu(English)', 'web-zfx-Mena(Arabic)',
+    'web-zfx-Mena(English)' , 'web-zfx-China_Bak(Simple Chinese)',
+    'web-zfx-China_Bak(Traditional Chinese)', 'web-zfx-English_Bak'
+];
+
+const list_token = [
+    'webchat_b23e9e084d4b430895483f1ca8e6ee8a', 'webchat_d43dce53eb044824a8220d00e706a22e',
+    'webchat_9b9980a3f41a435eb7946340ca6f9f10', 'webchat_8c02c10cb0014f8bb75651e1365a0933',
+    'webchat_f48a93d7c6ed40a69bfd40014cf5e69b', 'webchat_ab01096a0615414d89f1bd8788fd8da6',
+    'webchat_0c2945ede68e4ec9adb7de46ea97d01a', 'webchat_995e2e5b973d4117a8d8171649559444',
+    'webchat_e6e521f495fe42289e941ea885cb7e36', 'webchat_8c9ff79c42564f3db391f8aee745a291',
+    'webchat_e06a2be6fe55482280fd81f488e1b97b', 'webchat_9828a1765b274f898e3da40fe53c0b5a',
+    'webchat_bd7d74e55801400e92d6240a01cb5cc1', 'webchat_005b3c8be50541c3b3fa88836e145fdd',
+    'webchat_51af901429634bf2afeec8768bc88f21', 'webchat_35d286fd74314b22aad7ff27aaa1c3b5',
+    'webchat_d2f93d04039549f8bee97ff29db5c7df', 'webchat_e8b11e05702a49a0abd121f65e28d946',
+    'webchat_945242a469c540e18c1ff4d8acfdb0d5', 'webchat_772992e7c9a846a09df1d2987b726b34',
+    'webchat_237a7dcbe83e40f69309e00627fb27f5', 'webchat_41f04e91f3824f08adb9f3bba75e193d',
+    'webchat_ee6934302b89454c9bd2620159aa3c3e', 'webchat_f6f9a404c40c4c779137638c0b46b35b'
+];
+
+const trasfer_keyword = [
+    '转人工', '转人工',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', 'Transfer',
+    'Transfer', '转人工',
+    '转人工', 'Transfer',
+];
+
+function getObj(visitorId, username, region, from_website){
+    return obj = {
+        "foreignData": {
+            "userName": username,
+            "nickName": username,
+            // "userEmail": email,
+            // "phone": "",
+            "region": list_region[region],
+            "autoTransfer": trasfer_keyword[region],
+            "showHistory": 2
+        },
+        "foreignId": visitorId,
+        "userData": {
+            "foreignMediatype": list_mediatype[region],
+            "url": from_website
+        }
+    };
+}
