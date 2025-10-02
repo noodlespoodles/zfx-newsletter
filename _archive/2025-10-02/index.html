@@ -1,0 +1,561 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="telephone=no" name="format-detection">
+  <title>Traze Daily Market Snapshot</title>
+
+  <!--[if gte mso 9]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG></o:AllowPNG>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+
+  <style type="text/css">
+    /* Traze Brand Colors (from traze.com) */
+    :root {
+      --traze-dark: #090A1D;
+      --traze-dark-secondary: #000B20;
+      --traze-purple: #5B61E3;
+      --traze-cyan: #06B6D4;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --bg-light: #F9FAFB;
+      --bg-lighter: #FFFFFF;
+    }
+
+    /* Reset Styles */
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      background-color: #F9FAFB;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    table {
+      border-collapse: collapse !important;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    img {
+      border: 0;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Typography */
+    .display {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, .h1 {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      color: #1E2139;
+    }
+
+    h2, .h2 {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin: 0 0 12px 0;
+      color: #1E2139;
+    }
+
+    h3, .h3 {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 8px 0;
+      color: #1E2139;
+    }
+
+    p, .body {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
+      margin: 0 0 12px 0;
+      color: #1E2139;
+    }
+
+    .small {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #6B7280;
+    }
+
+    /* Cards */
+    .card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card-compact {
+      padding: 16px;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1E2139;
+      margin: 8px 0;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-change {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .stat-change.positive {
+      color: #10B981;
+    }
+
+    .stat-change.negative {
+      color: #EF4444;
+    }
+
+    /* Alert Box */
+    .alert {
+      background-color: #FEF3C7;
+      border-left: 4px solid #FFB800;
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+
+    .alert-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #92400E;
+      margin: 0;
+    }
+
+    /* Section Dividers */
+    .section-divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #161A5B 0%, #5B61E3 100%);
+      margin: 8px 0 20px 0;
+      border: none;
+    }
+
+    /* Event Timeline */
+    .event-item {
+      padding: 12px 0;
+      border-left: 2px solid #E5E7EB;
+      padding-left: 16px;
+      margin-left: 8px;
+      position: relative;
+    }
+
+    .event-item:before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 18px;
+      width: 8px;
+      height: 8px;
+      background-color: #090A1D;
+      border-radius: 50%;
+    }
+
+    .event-time {
+      font-size: 13px;
+      font-weight: 600;
+      color: #090A1D;
+    }
+
+    .event-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1E2139;
+      margin-top: 4px;
+    }
+
+    /* Trader Tip Box */
+    .tip-box {
+      background-color: #F9FAFB;
+      border-left: 4px solid #090A1D;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .tip-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .tip-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #090A1D;
+      margin: 0 0 12px 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background-color: #ffffff;
+      color: #090A1D;
+      border: 2px solid #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #f3f4f6;
+    }
+
+    /* Mobile Responsive */
+    @media only screen and (max-width: 600px) {
+      .display { font-size: 28px !important; }
+      h1, .h1 { font-size: 24px !important; }
+      h2, .h2 { font-size: 20px !important; }
+      h3, .h3 { font-size: 17px !important; }
+
+      .card { padding: 16px !important; }
+      .stat-card { margin-bottom: 12px !important; }
+
+      .hide-mobile { display: none !important; }
+    }
+  </style>
+</head>
+
+<body style="margin:0;padding:0;width:100%;background-color:#F3F4F6;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F3F4F6;">
+    <tr>
+      <td align="center" style="padding:20px 0;">
+
+        <!-- Main Container: 600px -->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+
+          <!-- GRADIENT HERO HEADER (Traze Style) -->
+          <tr>
+            <td style="background:#090A1D;background:linear-gradient(135deg, #090A1D 0%, #1a1d4a 50%, #5B61E3 100%);padding:40px 20px;text-align:center;position:relative;">
+              <!--[if gte mso 9]>
+              <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:180px;">
+                <v:fill type="gradient" color="#090A1D" color2="#5B61E3" angle="135" />
+                <v:textbox style="mso-fit-shape-to-text:true" inset="0,0,0,0">
+              <![endif]-->
+              <div>
+                <img src="traze_logo.png" alt="Traze" style="height:36px;width:auto;display:block;margin:0 auto 24px auto;">
+                <h1 style="color:#ffffff;font-size:36px;font-weight:700;margin:0 0 12px 0;letter-spacing:-1px;">US Session Newsletter</h1>
+                <p style="color:#A5B4FC;font-size:15px;margin:0 0 4px 0;font-weight:500;">02 October 2025</p>
+              </div>
+              <!--[if gte mso 9]>
+                </v:textbox>
+              </v:rect>
+              <![endif]-->
+            </td>
+          </tr>
+
+          <!-- AT A GLANCE -->
+          <tr>
+            <td style="background-color:#F9FAFB;padding:24px 20px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <p class="label" style="margin:0 0 16px 0;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#6B7280;">At a glance</p>
+                    <div class="section-divider" style="width:60px;height:3px;background:linear-gradient(90deg, #090A1D 0%, #06B6D4 50%, #5B61E3 100%);margin:0 0 20px 0;border-radius:9999px;"></div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Stats Grid -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="32%" valign="top">
+                    <div class="stat-card" style="background-color:#ffffff;border-radius:8px;padding:16px;text-align:center;border:1px solid #E5E7EB;">
+                      <p class="stat-label" style="font-size:13px;font-weight:500;color:#6B7280;margin:0 0 8px 0;">S&P 500 Futures</p>
+                      <p class="stat-value" style="font-size:24px;font-weight:700;color:#1E2139;margin:0;">+0.3%</p>
+                      <p class="stat-change positive" style="font-size:14px;font-weight:600;margin:4px 0 0 0;color:#10B981;">8:22 AM ET</p>
+                    </div>
+                  </td>
+                  <td width="2%"></td>
+                  <td width="32%" valign="top">
+                    <div class="stat-card" style="background-color:#ffffff;border-radius:8px;padding:16px;text-align:center;border:1px solid #E5E7EB;">
+                      <p class="stat-label" style="font-size:13px;font-weight:500;color:#6B7280;margin:0 0 8px 0;">Nasdaq 100</p>
+                      <p class="stat-value" style="font-size:24px;font-weight:700;color:#1E2139;margin:0;">+0.6%</p>
+                      <p class="stat-change positive" style="font-size:14px;font-weight:600;margin:4px 0 0 0;color:#10B981;">Leading</p>
+                    </div>
+                  </td>
+                  <td width="2%"></td>
+                  <td width="32%" valign="top">
+                    <div class="stat-card" style="background-color:#ffffff;border-radius:8px;padding:16px;text-align:center;border:1px solid #E5E7EB;">
+                      <p class="stat-label" style="font-size:13px;font-weight:500;color:#6B7280;margin:0 0 8px 0;">VIX</p>
+                      <p class="stat-value" style="font-size:24px;font-weight:700;color:#1E2139;margin:0;">16</p>
+                      <p class="stat-change negative" style="font-size:14px;font-weight:600;margin:4px 0 0 0;color:#EF4444;">From 17 ↓</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Additional Stats Row -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
+                <tr>
+                  <td width="32%" valign="top">
+                    <div class="stat-card" style="background-color:#ffffff;border-radius:8px;padding:16px;text-align:center;border:1px solid #E5E7EB;">
+                      <p class="stat-label" style="font-size:13px;font-weight:500;color:#6B7280;margin:0 0 8px 0;">DXY</p>
+                      <p class="stat-value" style="font-size:20px;font-weight:700;color:#1E2139;margin:0;">Rising</p>
+                      <p class="stat-change positive" style="font-size:14px;font-weight:600;margin:4px 0 0 0;color:#10B981;">Bull flag ↑</p>
+                    </div>
+                  </td>
+                  <td width="2%"></td>
+                  <td width="32%" valign="top">
+                    <div class="stat-card" style="background-color:#ffffff;border-radius:8px;padding:16px;text-align:center;border:1px solid #E5E7EB;">
+                      <p class="stat-label" style="font-size:13px;font-weight:500;color:#6B7280;margin:0 0 8px 0;">Gold</p>
+                      <p class="stat-value" style="font-size:20px;font-weight:700;color:#1E2139;margin:0;">$3,883.58</p>
+                      <p class="stat-change positive" style="font-size:14px;font-weight:600;margin:4px 0 0 0;color:#10B981;">+0.5%</p>
+                    </div>
+                  </td>
+                  <td width="2%"></td>
+                  <td width="32%" valign="top">
+                    <div class="stat-card" style="background-color:#ffffff;border-radius:8px;padding:16px;text-align:center;border:1px solid #E5E7EB;">
+                      <p class="stat-label" style="font-size:13px;font-weight:500;color:#6B7280;margin:0 0 8px 0;">Oil</p>
+                      <p class="stat-value" style="font-size:20px;font-weight:700;color:#1E2139;margin:0;">$61.49</p>
+                      <p class="stat-change negative" style="font-size:14px;font-weight:600;margin:4px 0 0 0;color:#EF4444;">-0.5%</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- MARKET OVERVIEW -->
+          <tr>
+            <td style="background-color:#ffffff;padding:24px 20px;">
+              <p class="label" style="margin:0 0 12px 0;">Market overview</p>
+              <div class="section-divider"></div>
+
+              <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                Tech stocks are driving global indices to fresh highs as OpenAI's valuation soars to $500 billion, fuelling optimism around the AI boom (or bubble). S&P 500 futures are up 0.3% whilst Nasdaq 100 futures lead with a 0.6% gain.
+              </p>
+              <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                Despite the positive momentum, markets are navigating the first US government shutdown in seven years. The shutdown has delayed key economic data, with the non-farm payrolls report cancelled. However, Fed rate cut expectations remain intact—a quarter-point cut in October is 98% priced in, with an 80% chance of another cut in December.
+              </p>
+              <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                Bitcoin has risen 1.2% to $118,952.45, Ether is up 1.2% at $4,390.15. The 10-year Treasury yield is holding steady at 4.10%.
+              </p>
+              <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                The government shutdown adds an element of uncertainty, particularly around data flows and potential political volatility. However, with Fed rate cuts 98% priced in for October, the path of least resistance might be, for today at least.
+              </p>
+              <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                Watch for volatility around the 8:30 AM ET jobless claims release, and keep an eye on DXY strength as it could pressure risk assets if the breakout continues.
+              </p>
+              <p style="font-size:15px;line-height:1.6;color:#090A1D;margin:0;font-weight:600;">
+                Trade the levels, not the noise.
+              </p>
+            </td>
+          </tr>
+
+          <!-- INSTRUMENTS WATCH -->
+          <tr>
+            <td style="background-color:#F9FAFB;padding:24px 20px;">
+              <p class="label" style="margin:0 0 12px 0;">Instruments watch</p>
+              <div class="section-divider" style="width:60px;height:3px;background:linear-gradient(90deg, #090A1D 0%, #06B6D4 50%, #5B61E3 100%);margin:0 0 20px 0;border-radius:9999px;"></div>
+
+              <!-- ES -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">ES (S&P 500 Futures)</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  ES continues to grind up overnight. Resistance towards 6790, stronger at 6800 - a psychological number. If we break, the brakes are off. Support around 6750.
+                </p>
+                <img src="US500_2025-10-02_15-35-33.png" alt="ES Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+
+              <!-- NQ -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">NQ (Nasdaq 100 Futures)</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  NQ grinds up too. 25,000 will be a large resistance point so expect some volatility on the way and it mirrors ES.
+                </p>
+                <img src="US100_2025-10-02_15-35-38.png" alt="NQ Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+
+              <!-- CL -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">CL (WTI Crude Oil)</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  CL is sinking with some light volatility overnight. Looks to be in a range for now as todays positioning is digested.
+                </p>
+                <img src="USOIL_2025-10-02_15-36-07.png" alt="CL Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+
+              <!-- GL -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">GL (Gold)</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  GL against its often index opposing movement grinds up too. Interesting to see which will capitulate. The flight to safety might take hold ahead of uncertainty in the USA.
+                </p>
+                <img src="XAUUSD_2025-10-02_15-36-02.png" alt="GL Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+
+              <!-- EURUSD -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">EURUSD</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  EURUSD is probably part of a bigger range with a fairly defined middle. Be careful of with trend positioning. Likely trades fading the extremes.
+                </p>
+                <img src="EURUSD_2025-10-02_15-35-51.png" alt="EURUSD Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+
+              <!-- DXY -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">DXY (US Dollar Index)</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  DXY after yesterdays rally looks to have broken up out of a bull flag overnight. Beware the forming range per EURUSD.
+                </p>
+                <img src="DXY_2025-10-02_15-35-57.png" alt="DXY Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+
+              <!-- VIX -->
+              <div style="background-color:#ffffff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;">
+                <p style="font-size:16px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">VIX (Volatility Index)</p>
+                <p style="font-size:14px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  VIX sunk overnight but expect a spike as dealers position for the month and do so in the face of political uncertainty.
+                </p>
+                <img src="VIX_2025-10-02_15-54-01.png" alt="VIX Chart" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+            </td>
+          </tr>
+
+          <!-- TODAY'S CALENDAR -->
+          <tr>
+            <td style="background-color:#EEF2FF;padding:24px 20px;">
+              <p class="label" style="margin:0 0 12px 0;">Today's calendar</p>
+              <div class="section-divider"></div>
+
+              <div class="event-item" style="padding:12px 0 12px 16px;border-left:2px solid #E5E7EB;margin-left:8px;position:relative;">
+                <p class="event-time" style="font-size:13px;font-weight:600;color:#090A1D;margin:0;">08:30 AM ET</p>
+                <p class="event-title" style="font-size:14px;font-weight:500;color:#1E2139;margin:4px 0 0 0;">Initial Jobless Claims</p>
+              </div>
+
+              <div class="event-item" style="padding:12px 0 12px 16px;border-left:2px solid #E5E7EB;margin-left:8px;position:relative;">
+                <p class="event-time" style="font-size:13px;font-weight:600;color:#090A1D;margin:0;">Multiple times</p>
+                <p class="event-title" style="font-size:14px;font-weight:500;color:#1E2139;margin:4px 0 0 0;">Multiple Fed Speeches throughout the day</p>
+              </div>
+
+              <div class="alert" style="background-color:#FEF3C7;border-left:4px solid #FFB800;padding:12px 16px;border-radius:4px;margin-top:16px;">
+                <p class="alert-text" style="font-size:14px;font-weight:600;color:#92400E;margin:0;">Note: Non-farm payrolls data has been cancelled due to the government shutdown.</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- TRADER TIP -->
+          <tr>
+            <td style="background-color:#ffffff;padding:24px 20px;">
+              <div class="tip-box" style="background-color:#F9FAFB;border-left:4px solid #090A1D;border-radius:6px;padding:20px;">
+                <p style="font-size:24px;margin:0 0 8px 0;">💡</p>
+                <h3 class="tip-title" style="font-size:18px;font-weight:700;color:#090A1D;margin:0 0 12px 0;">Scalping stacked EMAs</h3>
+
+                <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 12px 0;">
+                  Trading is often complex. And that is fine. It can also be simple. This is an attractive notion. The problem is that this game requires you to outsmart other participants and take their money. Failing that, they'll take yours. Unless you are a massively funded entity and extremely clever, you're likely going to have to trade a relatively simple edge. Not to say that some of the best traders don't trade a simple edge. One such edge is to use the EMA (an expression of the average of the last specified number of bars) to wait for a trend to form and to take continuations.
+                </p>
+
+                <p style="font-size:15px;line-height:1.6;color:#1E2139;margin:0 0 16px 0;">
+                  Below is a clear uptrend on a 5 minute chart. When price pulls back to the 21 EMA, a trade is placed after the first bullish bar that closes back above, signifying the continuation of the trade. There are 2 trades, a 1R and 2R. Try it out. Many traders, notably Al Brooks, have been very successful with price action strategies, of which this is one.
+                </p>
+
+                <img src="trade_example.png" alt="Trade Example" style="width:100%;height:auto;border-radius:4px;display:block;">
+              </div>
+            </td>
+          </tr>
+
+          <!-- CTA / FOOTER (Traze Dark Style) -->
+          <tr>
+            <td style="background:#090A1D;background:linear-gradient(180deg, #000B20 0%, #090A1D 100%);padding:40px 20px;text-align:center;">
+              <h2 style="color:#ffffff;font-size:28px;font-weight:700;margin:0 0 12px 0;letter-spacing:-0.5px;">Ready to trade?</h2>
+              <p style="color:#A5B4FC;font-size:15px;margin:0 0 28px 0;font-weight:400;">Execute on these insights with Traze</p>
+
+              <a href="https://www.traze.com" class="btn btn-primary" style="display:inline-block;padding:14px 32px;border-radius:9999px;font-size:15px;font-weight:600;text-decoration:none;background-color:#ffffff;color:#090A1D;">Start trading</a>
+
+              <p style="color:#6B7280;font-size:13px;margin:32px 0 0 0;">Trade indices, forex, commodities & crypto</p>
+            </td>
+          </tr>
+
+          <!-- FOOTER LINKS -->
+          <tr>
+            <td style="background-color:#000B20;padding:32px 20px;text-align:center;">
+              <img src="traze_logo.png" alt="Traze" style="height:32px;width:auto;display:block;margin:0 auto 20px auto;opacity:0.8;">
+
+              <p style="color:#6B7280;font-size:12px;line-height:1.6;margin:0 0 20px 0;max-width:500px;margin-left:auto;margin-right:auto;">
+                <strong style="color:#9CA3AF;">Risk warning:</strong> Trading forex and CFDs involves significant risk and can result in the loss of your invested capital. You should not invest more than you can afford to lose and should ensure that you fully understand the risks involved.
+              </p>
+
+              <p style="color:#6B7280;font-size:11px;margin:0;">
+                <strong style="color:#9CA3AF;">Traze</strong> | Professional Trading Insights
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
