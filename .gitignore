@@ -1,0 +1,14 @@
+# Hide internal workflow and documentation
+_working/
+_docs/
+_reference/
+_templates/
+_assets/
+FOLDER_REORGANIZATION_PLAN.md
+*.pdf
+*.txt
+*.md
+!README.md
+
+# Keep only the archive public
+!_archive/

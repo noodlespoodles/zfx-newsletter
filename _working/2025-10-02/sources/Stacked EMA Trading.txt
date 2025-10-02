@@ -1,6 +1,0 @@
-Scalping stacked EMA’s.
-
-Trading is often complex. And that is fine. It can also be simple. This is an attractive notion. The problem is that this game requires you to outsmart other participants and take their money. Failing that, they’ll take yours. Unless you are a massively funded entity and extremely clever, you’re likely to going to have to trade a relatively simple edge. Not to say that some of the best traders don’t trade a simple edge. One such edge is to use the EMA (an expression of the average of the last specified number of bars) to wait for a trend to form and to take continuations. 
-
-Below is a clear uptrend on a 5 minute chart. When price pulls back to the 21 EMA, a trade is placed after the first bullish bar that closes back above, signifying the continuation of the trade. There are 2 trades, a 1R and 2R. Try it out. Many traders, notably Al Brooks, have been very successful with price action strategies, of which this is one. 
- 
